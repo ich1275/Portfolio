@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Alessio — FiveM Developer</title>
+  <meta name="description" content="Portfolio of Alessio, FiveM Developer and Project Manager focused on premium, production-ready systems." />
+  <style>
+    :root {
+      --bg: #050505;
+      --bg-soft: #0d0d0d;
+      --panel: rgba(255,255,255,0.04);
+      --line: rgba(255,255,255,0.12);
+      --line-strong: rgba(255,255,255,0.28);
+      --text: #f5f5f5;
+      --muted: rgba(245,245,245,0.68);
+      --muted-2: rgba(245,245,245,0.42);
+      --white: #ffffff;
+      --light: #f1f1f1;
+      --dark-text: #111111;
+      --max: 1320px;
+      --shadow: 0 20px 80px rgba(0,0,0,0.45);
+      --serif: "Georgia", "Times New Roman", serif;
+      --sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--sans);
+      background:
+        radial-gradient(circle at top left, rgba(255,255,255,0.06), transparent 28%),
+        radial-gradient(circle at top right, rgba(255,255,255,0.03), transparent 25%),
+        var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+    section { position: relative; }
+
+    .cursor,
+    .cursor-follower {
+      position: fixed;
+      left: 0;
+      top: 0;
+      pointer-events: none;
+      z-index: 9999;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      mix-blend-mode: difference;
+    }
+
+    .cursor {
+      width: 18px;
+      height: 18px;
+      border: 1.5px solid #fff;
+      transition: transform .15s ease, opacity .2s ease;
+    }
+
+    .cursor-follower {
+      width: 38px;
+      height: 38px;
+      border: 1px solid rgba(255,255,255,0.28);
+      transition: transform .28s ease, opacity .2s ease;
+    }
+
+    .loader {
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      display: grid;
+      place-items: center;
+      background: var(--bg);
+      animation: loaderFade 1s ease 2.3s forwards;
+    }
+
+    .loader-text {
+      font-family: var(--serif);
+      font-size: clamp(2rem, 6vw, 4rem);
+      letter-spacing: .75rem;
+      font-weight: 300;
+      animation: loaderPulse 1.8s ease-in-out infinite;
+    }
+
+    @keyframes loaderFade { to { opacity: 0; visibility: hidden; pointer-events: none; } }
+    @keyframes loaderPulse {
+      0%,100% { opacity: .2; transform: scale(.985); }
+      50% { opacity: 1; transform: scale(1); }
+    }
+
+    .topbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      padding: 1.5rem 0;
+      transition: background .3s ease, backdrop-filter .3s ease, border-color .3s ease;
+      border-bottom: 1px solid transparent;
+    }
+
+    .topbar.scrolled {
+      background: rgba(5,5,5,0.8);
+      backdrop-filter: blur(16px);
+      border-color: rgba(255,255,255,0.08);
+    }
+
+    .nav-inner,
+    .container {
+      width: min(calc(100% - 3rem), var(--max));
+      margin: 0 auto;
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+    }
+
+    .logo {
+      font-family: var(--serif);
+      font-size: 1.1rem;
+      letter-spacing: .4rem;
+      text-transform: uppercase;
+    }
+
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .nav-links a {
+      position: relative;
+      font-size: .78rem;
+      letter-spacing: .24rem;
+      text-transform: uppercase;
+      color: var(--muted);
+      transition: color .25s ease;
+    }
+
+    .nav-links a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -.45rem;
+      width: 0;
+      height: 1px;
+      background: var(--white);
+      transition: width .3s ease;
+    }
+
+    .nav-links a:hover { color: var(--white); }
+    .nav-links a:hover::after { width: 100%; }
+
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 8rem 0 4rem;
+      overflow: hidden;
+    }
+
+    .hero-grid {
+      width: min(calc(100% - 3rem), var(--max));
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1.25fr .75fr;
+      gap: 4rem;
+      align-items: end;
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-copy { max-width: 920px; }
+
+    .eyebrow,
+    .mini-label {
+      font-size: .78rem;
+      letter-spacing: .34rem;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .hero h1 {
+      font-family: var(--serif);
+      font-weight: 300;
+      font-size: clamp(4rem, 10vw, 8.3rem);
+      line-height: .95;
+      letter-spacing: -.08rem;
+      margin: 1.2rem 0 1.6rem;
+    }
+
+    .hero h1 span {
+      display: block;
+      color: rgba(255,255,255,0.72);
+    }
+
+    .hero-text {
+      max-width: 760px;
+      font-size: 1.08rem;
+      line-height: 1.95;
+      color: var(--muted);
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-top: 2.2rem;
+    }
+
+    .btn,
+    .ghost-btn {
+      padding: 1rem 1.4rem;
+      border: 1px solid var(--line-strong);
+      letter-spacing: .18rem;
+      text-transform: uppercase;
+      font-size: .78rem;
+      transition: transform .25s ease, background .25s ease, color .25s ease, border-color .25s ease;
+    }
+
+    .btn {
+      background: var(--white);
+      color: var(--dark-text);
+    }
+
+    .ghost-btn {
+      background: transparent;
+      color: var(--white);
+    }
+
+    .btn:hover,
+    .ghost-btn:hover {
+      transform: translateY(-4px);
+      border-color: var(--white);
+    }
+
+    .ghost-btn:hover {
+      background: rgba(255,255,255,0.06);
+    }
+
+    .hero-side {
+      display: grid;
+      gap: 1.2rem;
+      align-self: stretch;
+    }
+
+    .hero-card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+      border: 1px solid var(--line);
+      padding: 1.4rem;
+      min-height: 180px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+
+    .hero-card strong {
+      display: block;
+      font-size: 2rem;
+      font-family: var(--serif);
+      font-weight: 400;
+      margin-top: .85rem;
+    }
+
+    .hero-card p {
+      margin-top: .95rem;
+      color: var(--muted);
+      line-height: 1.8;
+      font-size: .95rem;
+    }
+
+    .hero-lines {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .hero-line {
+      position: absolute;
+      top: -20%;
+      width: 1px;
+      height: 140%;
+      background: linear-gradient(to bottom, transparent, rgba(255,255,255,.14), transparent);
+      animation: flow 3.6s linear infinite;
+      opacity: .65;
+    }
+
+    .hero-line:nth-child(1) { left: 10%; animation-delay: 0s; }
+    .hero-line:nth-child(2) { left: 24%; animation-delay: .45s; }
+    .hero-line:nth-child(3) { left: 41%; animation-delay: .9s; }
+    .hero-line:nth-child(4) { left: 63%; animation-delay: 1.35s; }
+    .hero-line:nth-child(5) { left: 81%; animation-delay: 1.8s; }
+    .hero-line:nth-child(6) { left: 92%; animation-delay: 2.25s; }
+
+    @keyframes flow {
+      0% { transform: translateY(-100%); }
+      100% { transform: translateY(100%); }
+    }
+
+    .scroll-hint {
+      position: absolute;
+      left: 50%;
+      bottom: 2rem;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .8rem;
+      color: var(--muted-2);
+      text-transform: uppercase;
+      letter-spacing: .24rem;
+      font-size: .72rem;
+      z-index: 2;
+    }
+
+    .scroll-hint::before {
+      content: "";
+      width: 1px;
+      height: 56px;
+      background: rgba(255,255,255,.4);
+      animation: bounce 1.8s ease-in-out infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(12px); }
+    }
+
+    .section-dark {
+      background: var(--bg);
+      color: var(--text);
+      padding: 8rem 0;
+    }
+
+    .section-light {
+      background: var(--light);
+      color: var(--dark-text);
+      padding: 8rem 0;
+    }
+
+    .section-label {
+      font-size: clamp(4.6rem, 16vw, 12rem);
+      font-weight: 800;
+      letter-spacing: .7rem;
+      opacity: .04;
+      position: absolute;
+      inset: auto 0 0 0;
+      top: 50%;
+      transform: translateY(-50%);
+      text-align: center;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .section-light .section-label { opacity: .055; }
+
+    .section-head {
+      display: grid;
+      grid-template-columns: .85fr 1.15fr;
+      gap: 3rem;
+      align-items: start;
+      margin-bottom: 4.5rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    .section-title {
+      font-family: var(--serif);
+      font-size: clamp(2.5rem, 6vw, 4.6rem);
+      font-weight: 300;
+      line-height: 1;
+      letter-spacing: -.04rem;
+    }
+
+    .section-desc {
+      color: inherit;
+      opacity: .76;
+      line-height: 1.95;
+      font-size: 1.02rem;
+      max-width: 740px;
+    }
+
+    .about-grid {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: 1.08fr .92fr;
+      gap: 2rem;
+      align-items: stretch;
+    }
+
+    .about-card,
+    .about-panel,
+    .skill-card,
+    .project-card,
+    .contact-card {
+      border: 1px solid currentColor;
+      border-color: rgba(255,255,255,0.1);
+    }
+
+    .section-light .project-card,
+    .section-light .contact-card,
+    .section-light .about-card,
+    .section-light .about-panel {
+      border-color: rgba(17,17,17,0.12);
+    }
+
+    .about-card {
+      padding: 2rem;
+      background: rgba(255,255,255,0.03);
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 1.6rem;
+    }
+
+    .section-light .about-card {
+      background: rgba(17,17,17,0.02);
+      box-shadow: 0 16px 70px rgba(17,17,17,0.08);
+    }
+
+    .about-card h3,
+    .about-panel h3,
+    .project-card h3,
+    .contact-card h3 {
+      font-family: var(--serif);
+      font-size: 1.55rem;
+      font-weight: 400;
+      margin-bottom: 1rem;
+    }
+
+    .about-card p,
+    .about-panel p,
+    .project-card p,
+    .contact-card p {
+      line-height: 1.9;
+      opacity: .78;
+    }
+
+    .about-meta {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: .9rem;
+    }
+
+    .meta-box {
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 1rem;
+    }
+
+    .section-light .meta-box {
+      border-color: rgba(17,17,17,0.12);
+    }
+
+    .meta-box span {
+      display: block;
+      font-size: .74rem;
+      letter-spacing: .22rem;
+      text-transform: uppercase;
+      opacity: .58;
+      margin-bottom: .55rem;
+    }
+
+    .meta-box strong {
+      display: block;
+      font-size: 1rem;
+      font-weight: 500;
+      line-height: 1.5;
+    }
+
+    .about-panel {
+      padding: 2.2rem;
+      background:
+        linear-gradient(150deg, rgba(255,255,255,0.08), rgba(255,255,255,0.015)),
+        linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px),
+        linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px);
+      background-size: auto, 36px 36px, 36px 36px;
+      min-height: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .section-light .about-panel {
+      background:
+        linear-gradient(150deg, rgba(17,17,17,0.08), rgba(17,17,17,0.015)),
+        linear-gradient(90deg, rgba(17,17,17,0.08) 1px, transparent 1px),
+        linear-gradient(rgba(17,17,17,0.06) 1px, transparent 1px);
+      background-size: auto, 36px 36px, 36px 36px;
+    }
+
+    .about-panel::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, transparent, rgba(255,255,255,.08), transparent);
+      transform: translateX(-100%);
+      animation: shine 4s linear infinite;
+    }
+
+    .section-light .about-panel::after {
+      background: linear-gradient(120deg, transparent, rgba(17,17,17,.08), transparent);
+    }
+
+    @keyframes shine {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    .code-lines {
+      display: grid;
+      gap: .75rem;
+      margin-top: 1.5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .code-line {
+      display: flex;
+      gap: 1rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: .92rem;
+      opacity: .85;
+    }
+
+    .code-line span:first-child {
+      width: 2rem;
+      color: rgba(255,255,255,.42);
+    }
+
+    .section-light .code-line span:first-child {
+      color: rgba(17,17,17,.42);
+    }
+
+    .skills-grid {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.3rem;
+    }
+
+    .skill-card {
+      padding: 2rem;
+      background: rgba(255,255,255,0.025);
+      border: 1px solid rgba(255,255,255,0.08);
+      transition: transform .3s ease, border-color .3s ease, background .3s ease;
+    }
+
+    .skill-card:hover {
+      transform: translateY(-8px);
+      border-color: rgba(255,255,255,0.24);
+      background: rgba(255,255,255,0.045);
+    }
+
+    .skill-number {
+      font-family: var(--serif);
+      font-size: 2.4rem;
+      opacity: .34;
+      margin-bottom: .9rem;
+    }
+
+    .skill-card h3 {
+      font-size: 1.15rem;
+      letter-spacing: .16rem;
+      text-transform: uppercase;
+      margin-bottom: .85rem;
+      font-weight: 500;
+    }
+
+    .skill-card p {
+      color: var(--muted);
+      line-height: 1.85;
+      font-size: .96rem;
+    }
+
+    .work-list {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    .project-card {
+      display: grid;
+      grid-template-columns: .9fr 1.1fr;
+      gap: 2rem;
+      padding: 1.5rem;
+      background: rgba(255,255,255,0.5);
+      transition: transform .3s ease, box-shadow .3s ease;
+    }
+
+    .project-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 16px 60px rgba(17,17,17,0.1);
+    }
+
+    .project-visual {
+      min-height: 320px;
+      border: 1px solid rgba(17,17,17,0.14);
+      background:
+        linear-gradient(135deg, rgba(17,17,17,0.95), rgba(50,50,50,0.92)),
+        #000;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .project-visual::before,
+    .project-visual::after {
+      content: "";
+      position: absolute;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      filter: blur(12px);
+    }
+
+    .project-visual::before {
+      width: 180px; height: 180px; top: -40px; right: -30px;
+    }
+
+    .project-visual::after {
+      width: 120px; height: 120px; bottom: -20px; left: -10px;
+    }
+
+    .visual-label {
+      font-size: .72rem;
+      letter-spacing: .24rem;
+      text-transform: uppercase;
+      opacity: .65;
+      position: relative;
+      z-index: 1;
+    }
+
+    .visual-title {
+      position: relative;
+      z-index: 1;
+      font-family: var(--serif);
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1;
+      max-width: 360px;
+    }
+
+    .visual-badges {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-wrap: wrap;
+      gap: .7rem;
+    }
+
+    .visual-badges span,
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 2.1rem;
+      padding: .45rem .9rem;
+      border: 1px solid rgba(255,255,255,0.18);
+      font-size: .72rem;
+      letter-spacing: .16rem;
+      text-transform: uppercase;
+      backdrop-filter: blur(10px);
+    }
+
+    .project-copy {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .project-copy p + p { margin-top: 1rem; }
+
+    .tag-row {
+      display: flex;
+      gap: .7rem;
+      flex-wrap: wrap;
+      margin-top: 1.4rem;
+    }
+
+    .tag {
+      border-color: rgba(17,17,17,0.14);
+      color: rgba(17,17,17,0.8);
+    }
+
+    .contact-wrap {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: .95fr 1.05fr;
+      gap: 1.6rem;
+      align-items: stretch;
+    }
+
+    .contact-card {
+      padding: 2rem;
+      background: rgba(255,255,255,0.025);
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: var(--shadow);
+    }
+
+    .contact-list {
+      display: grid;
+      gap: .9rem;
+      margin-top: 1.4rem;
+    }
+
+    .contact-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      font-size: .95rem;
+    }
+
+    .contact-item span:first-child {
+      text-transform: uppercase;
+      letter-spacing: .16rem;
+      color: var(--muted-2);
+      font-size: .76rem;
+    }
+
+    .contact-cta {
+      margin-top: 1.7rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 3.1rem;
+      padding: 0 1.2rem;
+      border: 1px solid rgba(255,255,255,0.24);
+      letter-spacing: .18rem;
+      text-transform: uppercase;
+      font-size: .78rem;
+      transition: transform .25s ease, background .25s ease;
+    }
+
+    .contact-cta:hover {
+      transform: translateY(-4px);
+      background: rgba(255,255,255,0.06);
+    }
+
+    .availability {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .availability-box {
+      padding: 1.15rem;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.02);
+    }
+
+    .availability-box strong {
+      display: block;
+      font-family: var(--serif);
+      font-size: 1.2rem;
+      margin-bottom: .55rem;
+    }
+
+    footer {
+      padding: 1.6rem 0 2rem;
+      background: var(--bg-soft);
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .footer-inner {
+      width: min(calc(100% - 3rem), var(--max));
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      color: var(--muted-2);
+      font-size: .76rem;
+      letter-spacing: .18rem;
+      text-transform: uppercase;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(42px);
+      transition: opacity .85s ease, transform .85s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 1100px) {
+      .hero-grid,
+      .section-head,
+      .about-grid,
+      .contact-wrap,
+      .project-card {
+        grid-template-columns: 1fr;
+      }
+
+      .skills-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .hero-side {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 760px) {
+      body { cursor: auto; }
+      .cursor, .cursor-follower { display: none; }
+      .nav-inner { align-items: flex-start; flex-direction: column; }
+      .nav-links { gap: 1rem 1.2rem; }
+      .hero { padding-top: 9rem; }
+      .hero-side,
+      .skills-grid,
+      .about-meta {
+        grid-template-columns: 1fr;
+      }
+      .section-dark, .section-light { padding: 6rem 0; }
+      .hero-actions { width: 100%; }
+      .btn, .ghost-btn { width: 100%; text-align: center; }
+      .project-visual { min-height: 260px; }
+      .section-label { letter-spacing: .28rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="cursor"></div>
+  <div class="cursor-follower"></div>
+
+  <div class="loader">
+    <div class="loader-text">DS | ALESSIO</div>
+  </div>
+
+  <header class="topbar" id="topbar">
+    <div class="nav-inner">
+      <a class="logo" href="#home">DS | ALESSIO</a>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="#home">Home</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#expertise">Expertise</a></li>
+          <li><a href="#work">Work</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero" id="home">
+    <div class="hero-lines" aria-hidden="true">
+      <div class="hero-line"></div>
+      <div class="hero-line"></div>
+      <div class="hero-line"></div>
+      <div class="hero-line"></div>
+      <div class="hero-line"></div>
+      <div class="hero-line"></div>
+    </div>
+
+    <div class="hero-grid">
+      <div class="hero-copy reveal">
+        <div class="eyebrow">FiveM Developer • Project Management • Premium Systems</div>
+        <h1>Alessio <span>builds modern FiveM experiences.</span></h1>
+        <p class="hero-text">
+          I develop structured, production-ready systems for FiveM servers with a focus on clean code,
+          scalable architecture and a premium user experience. Alongside development, I currently manage
+          an active FiveM project in a project management role.
+        </p>
+        <div class="hero-actions">
+          <a href="#work" class="btn">View Selected Work</a>
+          <a href="#contact" class="ghost-btn">Start a Project</a>
+        </div>
+      </div>
+
+      <div class="hero-side reveal">
+        <article class="hero-card">
+          <div class="mini-label">Position</div>
+          <strong>Developer</strong>
+          <p>Focused on FiveM development, modular scripting and technical project structure.</p>
+        </article>
+        <article class="hero-card">
+          <div class="mini-label">Approach</div>
+          <strong>Production-Ready</strong>
+          <p>Systems designed to look polished, scale cleanly and work in real server environments.</p>
+        </article>
+      </div>
+    </div>
+
+    <div class="scroll-hint">Scroll</div>
+  </section>
+
+  <section class="section-light" id="about">
+    <div class="section-label">ABOUT</div>
+    <div class="container">
+      <div class="section-head reveal">
+        <h2 class="section-title">Developer-driven work with structure and clarity.</h2>
+        <p class="section-desc">
+          My focus is not only writing scripts, but creating systems that are clean, expandable and ready for long-term use.
+          I work with a developer mindset while also understanding the bigger picture behind server workflows, team coordination,
+          priorities and quality standards.
+        </p>
+      </div>
+
+      <div class="about-grid">
+        <article class="about-card reveal">
+          <div>
+            <h3>About Me</h3>
+            <p>
+              I am a FiveM Developer with a strong interest in modern systems, premium presentation and efficient project structure.
+              My work combines technical implementation with a clear eye for maintainability, quality and user experience.
+            </p>
+          </div>
+          <div class="about-meta">
+            <div class="meta-box">
+              <span>Core Role</span>
+              <strong>FiveM Developer</strong>
+            </div>
+            <div class="meta-box">
+              <span>Additional Role</span>
+              <strong>Project Management</strong>
+            </div>
+            <div class="meta-box">
+              <span>Primary Focus</span>
+              <strong>Production-Ready Systems</strong>
+            </div>
+            <div class="meta-box">
+              <span>Clients</span>
+              <strong>Servers, Communities, Agencies</strong>
+            </div>
+          </div>
+        </article>
+
+        <article class="about-panel reveal">
+          <h3>Working Principle</h3>
+          <p>
+            Every project should feel intentional: clean architecture, clear configuration, modern presentation and reliable execution.
+            I aim to build systems that are not only functional, but also professional in how they are structured and delivered.
+          </p>
+          <div class="code-lines" aria-hidden="true">
+            <div class="code-line"><span>01</span><span>framework = "FiveM"</span></div>
+            <div class="code-line"><span>02</span><span>focus = "clean structure"</span></div>
+            <div class="code-line"><span>03</span><span>goal = "production_ready"</span></div>
+            <div class="code-line"><span>04</span><span>quality = "premium user experience"</span></div>
+            <div class="code-line"><span>05</span><span>approach = "developer first"</span></div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-dark" id="expertise">
+    <div class="section-label">EXPERTISE</div>
+    <div class="container">
+      <div class="section-head reveal">
+        <h2 class="section-title">Focused skills for modern FiveM projects.</h2>
+        <p class="section-desc">
+          My work is centered around technical quality, clean implementation and dependable delivery.
+          These are the areas that define how I build, improve and manage server systems.
+        </p>
+      </div>
+
+      <div class="skills-grid">
+        <article class="skill-card reveal">
+          <div class="skill-number">01</div>
+          <h3>FiveM Development</h3>
+          <p>
+            Building server systems with a focus on usability, modular structure and polished in-game experiences.
+          </p>
+        </article>
+
+        <article class="skill-card reveal">
+          <div class="skill-number">02</div>
+          <h3>Script Development</h3>
+          <p>
+            Creating scripts that are organized, maintainable and easier to expand as a project grows.
+          </p>
+        </article>
+
+        <article class="skill-card reveal">
+          <div class="skill-number">03</div>
+          <h3>Project Management</h3>
+          <p>
+            Coordinating development processes, setting priorities and keeping project quality consistent.
+          </p>
+        </article>
+
+        <article class="skill-card reveal">
+          <div class="skill-number">04</div>
+          <h3>System Structure</h3>
+          <p>
+            Organizing features, logic and workflows so systems remain clear and practical over time.
+          </p>
+        </article>
+
+        <article class="skill-card reveal">
+          <div class="skill-number">05</div>
+          <h3>Premium Presentation</h3>
+          <p>
+            Combining development with modern visual presentation to make systems feel more professional and complete.
+          </p>
+        </article>
+
+        <article class="skill-card reveal">
+          <div class="skill-number">06</div>
+          <h3>Client-Oriented Delivery</h3>
+          <p>
+            Developing with the end goal in mind: real server use, clear communication and reliable results.
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-light" id="work">
+    <div class="section-label">WORK</div>
+    <div class="container">
+      <div class="section-head reveal">
+        <h2 class="section-title">Selected work directions and project focus.</h2>
+        <p class="section-desc">
+          At the moment, my portfolio is centered around FiveM scripts and systems. Instead of placeholder client names,
+          this section presents the kind of work I currently build and improve.
+        </p>
+      </div>
+
+      <div class="work-list">
+        <article class="project-card reveal">
+          <div class="project-visual">
+            <div class="visual-label">System Focus</div>
+            <div class="visual-title">Custom FiveM Script Systems</div>
+            <div class="visual-badges">
+              <span>Modular</span>
+              <span>Clean</span>
+              <span>Scalable</span>
+            </div>
+          </div>
+          <div class="project-copy">
+            <h3>Custom FiveM Script Systems</h3>
+            <p>
+              Development of custom scripts tailored to the needs of modern FiveM servers. The focus is on structure,
+              reliable functionality and a foundation that can be expanded over time.
+            </p>
+            <p>
+              This includes systems that should not only work technically, but also feel refined in day-to-day server use.
+            </p>
+            <div class="tag-row">
+              <span class="tag">FiveM</span>
+              <span class="tag">Script Development</span>
+              <span class="tag">Production-Ready</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="project-card reveal">
+          <div class="project-visual">
+            <div class="visual-label">Workflow Focus</div>
+            <div class="visual-title">System Integration & Improvement</div>
+            <div class="visual-badges">
+              <span>Refinement</span>
+              <span>Quality</span>
+              <span>Performance</span>
+            </div>
+          </div>
+          <div class="project-copy">
+            <h3>System Integration & Improvement</h3>
+            <p>
+              Improving existing scripts, refining workflows and helping systems fit together in a more professional way.
+              The goal is a smoother overall experience instead of isolated features.
+            </p>
+            <p>
+              This kind of work is especially important for servers that want to move from basic functionality to a more polished standard.
+            </p>
+            <div class="tag-row">
+              <span class="tag">Optimization</span>
+              <span class="tag">Integration</span>
+              <span class="tag">UX Focus</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="project-card reveal">
+          <div class="project-visual">
+            <div class="visual-label">Management Focus</div>
+            <div class="visual-title">Project Structure & Direction</div>
+            <div class="visual-badges">
+              <span>Planning</span>
+              <span>Standards</span>
+              <span>Coordination</span>
+            </div>
+          </div>
+          <div class="project-copy">
+            <h3>Project Structure & Direction</h3>
+            <p>
+              In addition to development, I work in project management for an active FiveM project.
+              That means organizing priorities, keeping standards clear and supporting a more consistent development process.
+            </p>
+            <p>
+              Strong technical work becomes even more valuable when it is backed by direction, structure and quality control.
+            </p>
+            <div class="tag-row">
+              <span class="tag">Project Management</span>
+              <span class="tag">Coordination</span>
+              <span class="tag">Quality Standards</span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-dark" id="contact">
+    <div class="section-label">CONTACT</div>
+    <div class="container">
+      <div class="section-head reveal">
+        <h2 class="section-title">Let’s build something modern and reliable.</h2>
+        <p class="section-desc">
+          I work with clients, server owners, communities, companies and agencies looking for professional FiveM solutions.
+          Replace the placeholder contact details below with your real information before publishing.
+        </p>
+      </div>
+
+      <div class="contact-wrap">
+        <article class="contact-card reveal">
+          <h3>Contact Details</h3>
+          <p>
+            Use this section for direct contact. The fields are already prepared so you only need to insert your real details.
+          </p>
+          <div class="contact-list">
+            <div class="contact-item"><span>Discord</span><span>oezelburn1</span></div>
+            <div class="contact-item"><span>E-Mail</span><span>alessio.emin@gmail.com</span></div>
+            <div class="contact-item"><span>GitHub</span><span>github.com/ich1275</span></div>
+          </div>
+          <a class="contact-cta" href="mailto:your@email.com">Send an E-Mail</a>
+        </article>
+
+        <article class="contact-card reveal availability">
+          <div class="availability-box">
+            <strong>Who I work with</strong>
+            <p>Clients, server owners, communities, companies and agencies that want more than a basic solution.</p>
+          </div>
+          <div class="availability-box">
+            <strong>What I focus on</strong>
+            <p>FiveM systems, scripting, project structure and a professional overall standard.</p>
+          </div>
+          <div class="availability-box">
+            <strong>Working style</strong>
+            <p>Clear, modern, structured and developer-oriented with attention to both quality and presentation.</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-inner">
+      <span>© 2026 Alessio</span>
+      <span>FiveM Developer Portfolio</span>
+    </div>
+  </footer>
+
+  <script>
+    const cursor = document.querySelector('.cursor');
+    const follower = document.querySelector('.cursor-follower');
+    const topbar = document.getElementById('topbar');
+    const hoverTargets = document.querySelectorAll('a, .skill-card, .project-card, .hero-card, .contact-card');
+
+    if (window.matchMedia('(pointer:fine)').matches) {
+      let followerX = 0, followerY = 0;
+      let mouseX = 0, mouseY = 0;
+
+      window.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        cursor.style.left = mouseX + 'px';
+        cursor.style.top = mouseY + 'px';
+      });
+
+      const animateFollower = () => {
+        followerX += (mouseX - followerX) * 0.14;
+        followerY += (mouseY - followerY) * 0.14;
+        follower.style.left = followerX + 'px';
+        follower.style.top = followerY + 'px';
+        requestAnimationFrame(animateFollower);
+      };
+      animateFollower();
+
+      hoverTargets.forEach(el => {
+        el.addEventListener('mouseenter', () => {
+          cursor.style.transform = 'translate(-50%, -50%) scale(1.8)';
+          follower.style.transform = 'translate(-50%, -50%) scale(1.25)';
+        });
+        el.addEventListener('mouseleave', () => {
+          cursor.style.transform = 'translate(-50%, -50%) scale(1)';
+          follower.style.transform = 'translate(-50%, -50%) scale(1)';
+        });
+      });
+    }
+
+    window.addEventListener('scroll', () => {
+      topbar.classList.toggle('scrolled', window.scrollY > 24);
+    });
+
+    document.querySelectorAll('a[href^="#"]').forEach(link => {
+      link.addEventListener('click', (e) => {
+        const target = document.querySelector(link.getAttribute('href'));
+        if (!target) return;
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    }, { threshold: 0.14, rootMargin: '0px 0px -70px 0px' });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
